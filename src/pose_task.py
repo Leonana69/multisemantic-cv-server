@@ -31,7 +31,7 @@ class PoseTask():
         input = tf.image.resize_with_pad(input, 256, 256)
         # TF Lite format expects tensor type of float32.
         input_image = tf.cast(input, dtype=tf.float32)
-        print(input_image.numpy().shape)
+        # print(input_image.numpy().shape)
 
         self.interpreter.set_tensor(self.input_details[0]['index'], input_image.numpy())
         self.interpreter.invoke()
