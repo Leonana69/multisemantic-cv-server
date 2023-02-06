@@ -62,7 +62,7 @@ def json_api():
     }
 
     if origin_image.any():
-        result = multisemantic_service([json_packet['function']], origin_image)
+        result = multisemantic_service(json_packet['function'], origin_image)
         packet['result'] = result
 
     return packet
@@ -88,8 +88,4 @@ def multisemantic_service(functions, image):
 if __name__ == "__main__":
     global __pose_task
     __pose_task = PoseTask()
-    app.run(host='192.168.1.144', port=50001)
-#     HOST, PORT = '192.168.1.144', 50001
-#     with http.server.HTTPServer((HOST, PORT), MultisemanticHTTPServerHandler) as server:
-#         print("Server start...")
-#         server.serve_forever()
+    app.run(host='localhost', port=50001)
