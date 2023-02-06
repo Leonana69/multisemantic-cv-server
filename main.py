@@ -5,7 +5,7 @@ import os, cv2, json
 import numpy as np
 from src.pose_task import PoseTask
 from src.utils import draw_pose_keypoints
-from src.info_parse import MultisemanticPacket
+from src.multisemantic_packet import MultisemanticPacket
 
 app = Flask(__name__)
 app.config['UPLOAD_IMAGE_PATH'] = 'assets/images/'
@@ -54,18 +54,15 @@ def serve_image(filename):
 
 @app.route('/api', methods=['POST'])
 def json_api():
-    (json_packet, origin_image) = MultisemanticPacket.info_parse(request.data)
-    packet = {
-        'user': json_packet['user'],
-        'mode': json_packet['mode'],
-        'result': '',
-    }
+    (server_packet, origin_image) = MultisemanticPacket.parse(request.data)
 
-    if origin_image.any():
-        result = multisemantic_service(json_packet['function'], origin_image)
-        packet['result'] = result
+    if origin_image is not None:
+        result = multisemantic_service(server_packet['function'], origin_image)
+        server_packet['result'] = result
+    else:
+        server_packet['status'] = '[FAILED]: no image'
 
-    return packet
+    return server_packet
 
 def multisemantic_service(functions, image):
     result = []
@@ -82,7 +79,7 @@ def multisemantic_service(functions, image):
             case _:
                 print('undefined function')
 
-    print(result)
+    # print(result)
     return result
 
 if __name__ == "__main__":
